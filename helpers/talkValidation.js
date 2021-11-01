@@ -1,8 +1,15 @@
 const { TALK_NOT_VALID } = require('./errorMessages');
 const rateValidation = require('./rateValidation');
 
-module.exports = (talk) => {
+const fieldsExist = (talk) => {
   if (!talk.rate || !talk.watchedAt) {
+    return true;
+  }
+  return false;
+};
+
+module.exports = (talk) => {
+  if (!talk || fieldsExist(talk)) {
     return {
       fieldIsValid: false,
       fieldResponse: TALK_NOT_VALID,

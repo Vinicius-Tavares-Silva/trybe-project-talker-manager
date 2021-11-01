@@ -1,3 +1,4 @@
+const express = require('express');
 const fs = require('fs').promises;
 
 const FILENAME = 'talker.json';
@@ -11,4 +12,26 @@ const getTalkers = async (req, res, next) => {
     next(err);
   }
 };
-module.exports = { getTalkers };
+
+const getTalkersById = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const data = await fs.readFile(FILENAME);
+    const talkers = JSON.parse(data);
+    const talker = talkers.find((talker) => talker.id === parseInt(id, 10))
+    if(!talker){
+      return res.status(404).send({ message: 'Pessoa palestrante não encontrada'});
+    }
+    return res.status(200).send(talker);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const router = express.Router({ mergeParams: true });
+
+router.get('/', getTalkers);
+router.get('/:id', getTalkersById);
+
+
+module.exports = router;

@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const errorHandler = require('./middlewares/error');
 const talker = require('./controllers/talker');
-const auth = require('./middlewares/authorization');
+const login = require('./middlewares/login');
 
 const app = express();
 app.use(bodyParser.json());
@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 const HTTP_OK_STATUS = 200;
 const PORT = '3000';
 
-app.post('/login', auth);
+app.post('/login', login);
 
 app.use('/talker', talker);
 

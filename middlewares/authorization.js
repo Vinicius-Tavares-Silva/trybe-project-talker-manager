@@ -1,21 +1,13 @@
-const emailValidation = require('../helpers/emailValidation');
-const passwordValidation = require('../helpers/passwordValidation');
+const { TOKEN_NOT_FOUND, TOKEN_NOT_VALID } = require('../helpers/errorMessages');
 
-module.exports = async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-    const { emailIsValid, emailResponse } = emailValidation(email);
-    const { passwordIsValid, passwordResponse } = passwordValidation(password);
-    if (!emailIsValid) {
-      return next(emailResponse);
-    }
-    if (!passwordIsValid) {
-      return next(passwordResponse);
-    }
-    res.status(200).send({
-      token: '7mqaVRXJSp886CGr',
-    });
-  } catch (err) {
-    next(err);
+module.exports = async (req, _res, next) => {
+  const { authorization } = req.headers;
+
+  if (!authorization) {
+    return next(TOKEN_NOT_FOUND);
   }
+  if (authorization.length < 16) {
+    return next(TOKEN_NOT_VALID);
+  }
+  return next();
 };

@@ -4,6 +4,7 @@ const readTalkers = require('../helpers/readTalkers');
 const createTalker = require('../helpers/createTalker');
 const postValidation = require('../helpers/postValidation');
 const updateTalker = require('../helpers/updateTalker');
+const deleteTalker = require('../helpers/deleteTalker');
 
 const getTalkers = async (req, res, next) => {
   try {
@@ -57,11 +58,22 @@ const putTalker = async (req, res, next) => {
   }
 };
 
+const removeTalker = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    await deleteTalker(id);
+    return res.status(200).send({ message: 'Pessoa palestrante deletada com sucesso' });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const router = express.Router({ mergeParams: true });
 
 router.get('/', getTalkers);
 router.get('/:id', getTalkersById);
 router.post('/', auth, postTalker);
 router.put('/:id', auth, putTalker);
+router.delete('/:id', auth, removeTalker);
 
 module.exports = router;

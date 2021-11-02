@@ -2,7 +2,7 @@ const { TALK_NOT_VALID } = require('./errorMessages');
 const rateValidation = require('./rateValidation');
 
 const fieldsExist = (talk) => {
-  if (!talk.rate || !talk.watchedAt) {
+  if ((!talk.rate && talk.rate !== 0) || !talk.watchedAt) {
     return true;
   }
   return false;

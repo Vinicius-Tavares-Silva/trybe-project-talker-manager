@@ -3,6 +3,7 @@ const auth = require('../middlewares/authorization');
 const readTalkers = require('../helpers/readTalkers');
 const createTalker = require('../helpers/createTalker');
 const postValidation = require('../helpers/postValidation');
+const updateTalker = require('../helpers/updateTalker');
 
 const getTalkers = async (req, res, next) => {
   try {
@@ -41,10 +42,26 @@ const postTalker = async (req, res, next) => {
   }
 };
 
+const putTalker = async (req, res, next) => {
+  const { id } = req.params;
+  const payload = req.body;
+  const { postIsValid, postResponse } = postValidation(payload);
+  try {
+    if (!postIsValid) {
+      return next(postResponse);
+    }
+    const newTalker = await updateTalker(payload, id);
+    return res.status(200).send(newTalker);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const router = express.Router({ mergeParams: true });
 
 router.get('/', getTalkers);
 router.get('/:id', getTalkersById);
 router.post('/', auth, postTalker);
+router.put('/:id', auth, putTalker);
 
 module.exports = router;
